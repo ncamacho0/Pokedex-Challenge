@@ -1,5 +1,3 @@
-let  data = null;
-
 let form = document.getElementById("form");
 let input = document.getElementById("inputSearch");
 
@@ -42,7 +40,7 @@ form.addEventListener('submit',(e) => {
     
     xhr.open("GET", "https://pokeapi.co/api/v2/pokemon/"+ input.value);
     
-    xhr.send(data);
+    xhr.send();
 })
 
 

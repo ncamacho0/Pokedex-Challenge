@@ -1,0 +1,84 @@
+En el HTML template:
+
+1. Por qué pusiste este script tag dentro del header...
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+	R1.- Tengo entendio que en el Header van ayudas para navegar, iconos, logos, metadatos etc. 
+		 De hecho la documentación de BULMA (framework frontend aplicado), ponia la invocación del script en el Header,
+		 Y yo lo deje ahí por el atributo "defer", ya que es un atributo que fue introducido en HTML5 
+		 para omitir la interrupción de la descarga de los recursos en este caso scripts, lo que hace "defer" es
+		 descargar el recurso de manera asincrona y paralela, ademas de que no hay ningun tipo de bloqueo al renderizado del HTML
+		 y se ejecuta ya que el renderizado del HTML ha terminado, así no existe niguna interrupción.
+
+... y el segundo al final del documento?
+<script src="./js/script.js"></script>
+	Este se me paso, con eso de que antes o por lo regular se ponen o ponian los recursos de js al final del documento, para garantizar que todo el contenido HTML haya cargado,
+	y asi el codigo js pueda interactuar con el DOM previamente renderizado.
+	Pero ahora con los atributos de HTML5 por ejemplo con el "defer" se puede poner en el header o al final del documento, las invocaciones de scripts js.
+	En lo personal yo los pongo al final de documento con el atributo "defer".
+
+2. En: xhr.send(data), para qué necesita el parámetro data?
+	R2.- No lo necesita, es un parametro opcional, de hecho si no se pone ningun argumento, se toma como null, 
+	yo solo puse explicíto el null dentro de una variable de bloque.
+
+
+3. En el llamado: xhr.open("GET", "https://pokeapi.co/api/v2/pokemon/"+ input.value) por qué omites el 3er parámetro?
+	R3.- El tercer parametro es un parametro booleano el cual indica si la petición es asincrona o no, en este caso como el parametro es opcional,
+	si no se pone nada como 3er parametro, tiene true por default. Y la peticion actua como asíncrona.
+
+4. Qué hace el método: document.getElementById ?
+	R4.- Busca en el DOM el elemento con el id que se le pasa como argumento, si lo encuentra regresa el elemento y si no regresa null.
+	Es la manera "nativa" de js para interactuar con el DOM, támbien existe document.querySelector para encontrar elementos con selectores de CSS
+
+
+5. In onreadystatechange method, what exactly is this, and in which moment you set the values for: readyState, status and responseText
+	R5.- This property contains the event handler to be called when the readystatechange event is fired. That means that when the readyState property change,
+	the event readystatechange is activate. And then we can check if we got a successful or a failure request.
+	well as i said, readyState is a property that returns the state of the request in this case 4 that means comeplete or done request.
+	Status is property that returns the numerical HTTP status code of the request in this case we are looking for a 200 code "done",
+	And responseText is a property that returns the text received of a request.
+	So we dont need to set values into readyState, status and responseText, because those are properties of the request. That we need to check if the request was successful, and the get the response.
+
+Notas extras:
+
+Sin duda el ejercicio cumple con el requerimiento funcional, pero me llama la atención que la lógica en JS está muy atada a los elementos de la UI, y no utiliza programación orientada a objetos.
+
+Tengo un reto para ti, le entras? Los cambios sugeridos serían los siguientes:
+
+- Convertir la información del Pokemon en un objeto que se adapte a las necesidades de tu aplicación (https://www.w3schools.com/js/js_objects.asp) como ejemplo:
+
+Pokemon = {
+	id: 1
+	name: 'Bulbasaur',
+	types: ["poison", "grass"],
+	sprites: {
+		front_default: "...",
+		front_female: "...",
+		front_shiny: "...",
+		... etc ...
+	}
+
+}
+
+- Al ser los datos del Pokemon un modelo, podríamos tener un archivo que se encargue de hacer las transacciones: llamar la API, formatear la información, etc. Ejemplo:
+
+PokemonService.js : 
+
+PokemonService = {
+	getPokemon: function(name) {
+		// llamar a PokeAPI
+		// Guardar el resultado en forma de Pokemon object
+		// regresar el Pokemon object
+	},
+	formatTypes(types) {
+		// Código para darle el formato deseado a los typos
+	}
+}
+
+- De tal manera que la interacción de Javascript con la UI quede en un solo archivo, que sirva de puente entre nuestra lógica y la UI. Por ejemplo desde el click:
+
+let myPokemon = PokemonService.getPokemon(pkmName)
+document.getElementById("types").innerHTML =  "Name: " + myPokemon.name;
+
+O tan solo convertir Pokemon en un objeto Javascript y utilizarlo como nuestro modelo.
+
+Saludos!
